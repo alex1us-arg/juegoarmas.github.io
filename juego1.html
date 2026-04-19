@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Partes del Arma</title>
+<p id="mensaje" style="color: red; font-weight: bold; height: 20px;"></p>
+
+<style>
+  body {
+    font-family: Arial;
+    text-align: center;
+    background-color: #f0f0f0;
+  }
+
+  h2 {
+    margin: 10px;
+  }
+
+  .game-area {
+    position: relative;
+    width: 800px;
+    margin: auto;
+  }
+
+  .game-area img {
+    width: 100%;
+  }
+
+  .dropzone {
+    position: absolute;
+    width: 90px;
+    height: 35px;
+    border: 2px solid rgb(0, 0, 0);
+    background: rgba(163, 163, 163, 0.3);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 1.0s ease;
+  }
+
+  /* POSICIONES */
+  #zona1 { top: 34px; left: 120px; }
+  #zona2 { top: 42px; left: 240px; }
+  #zona3 { top: 44px; left: 470px; }
+  #zona4 { top: 67px; left: 590px; }
+  #zona5 { top: 253px; left: 590px; }
+  #zona6 { top: 493px; left: 570px; }
+  #zona7 { top: 345px; left: 374px; }
+  #zona8 { top: 340px; left: 270px; }
+  #zona9 { top: 301px; left: 190px; }
+  #zona10 { top: 291px; left: 95px; }
+
+  .correct {
+    width: 90px;
+    height: 35px;
+    background: rgba(30, 255, 0, 0.699);
+    border: 2px solid rgb(0, 0, 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    text-align: center;
+  }
+
+    .incorrect {
+    width: 90px;
+    height: 35px;
+    font-size: 16px;
+    background: rgba(255, 0, 0, 0.699);
+    border: 2px solid rgb(0, 0, 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .items {
+    margin-top: 20px;
+  }
+
+  .draggable {
+    display: inline-block;
+    padding: 20px;
+    margin: 30px;
+    font-size: 14px;
+    background: rgba(134, 134, 134, 0.699);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 1.0s ease;
+  }
+</style>
+
+</head>
+<body>
+
+<h2>Partes de la Bersa TPR9</h2>
+
+<div class="game-area">
+  <img src="./arma_plantilla.png">
+
+  <div class="dropzone" id="zona1" data-match="p1"></div>
+  <div class="dropzone" id="zona2" data-match="p2"></div>
+  <div class="dropzone" id="zona3" data-match="p3"></div>
+  <div class="dropzone" id="zona4" data-match="p4"></div>
+  <div class="dropzone" id="zona5" data-match="p5"></div>
+  <div class="dropzone" id="zona6" data-match="p6"></div>
+  <div class="dropzone" id="zona7" data-match="p7"></div>
+  <div class="dropzone" id="zona8" data-match="p8"></div>
+  <div class="dropzone" id="zona9" data-match="p9"></div>
+  <div class="dropzone" id="zona10" data-match="p10"></div>
+</div>
+
+<div class="items">
+  <div class="draggable" id="p1">Guión</div>
+  <div class="draggable" id="p2">Corredera</div>
+  <div class="draggable" id="p3">Alza</div>
+  <div class="draggable" id="p4">Martillo</div>
+  <div class="draggable" id="p5">Seguro y Decocker</div>
+  <div class="draggable" id="p6">Empuñadura</div>
+  <div class="draggable" id="p7">Retén del cargador</div>
+  <div class="draggable" id="p8">Retén de corredera</div>
+  <div class="draggable" id="p9">Palanca de desarme</div>
+  <div class="draggable" id="p10">Riel Picatinny</div>
+</div>
+
+<script>
+const dropzones = document.querySelectorAll('.dropzone');
+const containerItems = document.querySelector('.items');
+
+let seleccionActual = null;
+
+// LISTA DE OPCIONES
+let opciones = [
+  { id: "p1", texto: "Guión" },
+  { id: "p2", texto: "Corredera" },
+  { id: "p3", texto: "Alza" },
+  { id: "p4", texto: "Martillo" },
+  { id: "p5", texto: "Seguro y Decocker" },
+  { id: "p6", texto: "Empuñadura" },
+  { id: "p7", texto: "Retén del cargador" },
+  { id: "p8", texto: "Retén de corredera" },
+  { id: "p9", texto: "Palanca de desarme" },
+  { id: "p10", texto: "Riel Picatinny" }
+];
+
+// MEZCLAR (random)
+function mezclar(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
+
+let opcionesRestantes = mezclar([...opciones]);
+
+// MOSTRAR UNA OPCIÓN
+function mostrarSiguiente() {
+  containerItems.innerHTML = "";
+
+  if (opcionesRestantes.length === 0) {
+    containerItems.innerHTML = "<b>🎉 Felicidades capo te sacaste un 10! 🎉</b>";
+    return;
+  }
+
+  const opcion = opcionesRestantes[0];
+
+  const div = document.createElement("div");
+  div.classList.add("draggable");
+  div.id = opcion.id;
+  div.textContent = opcion.texto;
+
+  div.addEventListener('click', () => {
+    seleccionActual = div;
+    div.style.border = "2px solid black";
+  });
+
+  containerItems.appendChild(div);
+}
+
+// REINICIAR JUEGO
+function reiniciarJuego() {
+  dropzones.forEach(zone => {
+    zone.innerHTML = "";
+    zone.classList.remove('correct', 'incorrect');
+  });
+
+  opcionesRestantes = mezclar([...opciones]);
+  seleccionActual = null;
+
+  mostrarSiguiente();
+}
+
+// CLICK EN ZONAS
+dropzones.forEach(zone => {
+  zone.addEventListener('click', () => {
+    if (!seleccionActual) return;
+
+    if (zone.dataset.match === seleccionActual.id) {
+      zone.classList.add('correct');
+      zone.appendChild(seleccionActual);
+
+      seleccionActual.style.background = "none";
+      seleccionActual.style.margin = "0";
+      seleccionActual.style.padding = "0";
+      seleccionActual.style.cursor = "default";
+      seleccionActual.style.pointerEvents = "none";
+      seleccionActual.style.border = "none";
+
+      // ELIMINAR OPCIÓN USADA
+      opcionesRestantes.shift();
+
+      seleccionActual = null;
+
+      // mostrar siguiente después de un pequeño delay
+      setTimeout(() => {
+        mostrarSiguiente();
+      }, 500);
+
+    } else {
+      zone.classList.add('incorrect');
+      zone.appendChild(seleccionActual);
+
+      seleccionActual.style.background = "none";
+      seleccionActual.style.margin = "0";
+      seleccionActual.style.padding = "0";
+      seleccionActual.style.cursor = "default";
+      seleccionActual.style.pointerEvents = "none";
+      seleccionActual.style.border = "none";
+
+      seleccionActual = null;
+
+      // reiniciar
+      setTimeout(() => {
+        reiniciarJuego();
+      }, 1500);
+    }
+  });
+});
+
+// INICIO
+mostrarSiguiente();
+</script>
+
+</body>
+</html>
